@@ -23,7 +23,7 @@ function App() {
         const res = await fetch("https://api.smash.gg/gql/alpha", {
           method: "POST",
           headers: {
-            Authorization: "Bearer ",
+            Authorization: "Bearer a12c24765a6edf6007669900bdf67bcf",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

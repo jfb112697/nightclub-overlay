@@ -9,7 +9,8 @@ function LowerThird(props) {
   const { accessToken, credentials } = useTwitchAuth();
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
-    credentials
+    credentials,
+    true
   );
   const [titleText, setTitleText] = useState("");
   const [playerPercents, setPlayerPercents] = useState([]);
@@ -33,7 +34,7 @@ function LowerThird(props) {
         {commentators && props.data.lowerThird.Commentary
           ? commentators.map((c) => {
               return (
-                <div className="commentary-block">
+                <div className="commentary-block" key={Math.random()}>
                   <div className="commentary-name">{c.Name}</div>
                   {c.Twitter ? (
                     <div className="commentary-twitter">@{c.Twitter}</div>

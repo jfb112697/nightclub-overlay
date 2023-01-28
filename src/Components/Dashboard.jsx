@@ -13,7 +13,8 @@ function Dashboard(props) {
   } = useTwitchAuth();
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
-    credentials
+    credentials,
+    true
   );
 
   async function submitHandler() {

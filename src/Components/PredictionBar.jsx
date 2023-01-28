@@ -19,7 +19,7 @@ function PredictionBar(props) {
             setDisplayScore1(--currentScore1);
           }
         }
-        interval = Math.max(inerval - 1, 30);
+        interval = Math.max(interval - 1, 20);
       } else {
         clearInterval(interval1);
       }
@@ -43,6 +43,7 @@ function PredictionBar(props) {
       clearInterval(interval2);
     };
   }, [props.playerPercents[0], props.playerPercents[1]]);
+
   return (
     <>
       <div className="prediction-bar" style={props.styles}>
@@ -71,7 +72,7 @@ function PredictionBar(props) {
             }}
           ></div>
         </div>
-        <div className="prediction-details">
+        <div className="prediction-details" style={{ alignItems: "flex-end" }}>
           <div className="prediction-label">{displayScore2 || "0"}%</div>
           <div className="option-name" style={{ textAlign: "right" }}>
             {props.outcomes[1].title}
@@ -79,7 +80,7 @@ function PredictionBar(props) {
         </div>
       </div>
 
-      <h4 style={{ margin: 0, position: "relative", top: "-15px" }}>
+      <h4 style={{ margin: 0, position: "relative", top: "-25px" }}>
         Total points wagered:{" "}
         {props.outcomes[0].channel_points + props.outcomes[1].channel_points ||
           "0"}

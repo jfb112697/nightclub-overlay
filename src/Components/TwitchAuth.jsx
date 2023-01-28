@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const TWITCH_CLIENT_ID = "";
-const TWITCH_REDIRECT_URI = "https://localhost:5000/";
+const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
+const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app/";
 
-function useChannelPredictions(accessToken, credentials) {
+function useChannelPredictions(accessToken, credentials, isMounted) {
   const [predictions, setPredictions] = useState({});
   const [outcomes, setOutcomes] = useState([]);
   const [isActive, setIsActive] = useState(false);
@@ -12,7 +12,7 @@ function useChannelPredictions(accessToken, credentials) {
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    if (accessToken && credentials) {
+    if (accessToken && credentials && isMounted) {
       const ws = new WebSocket("wss://eventsub-beta.wss.twitch.tv/ws");
 
       ws.onmessage = (event) => {
@@ -76,25 +76,27 @@ function useChannelPredictions(accessToken, credentials) {
 
     for (let i = 0; i < subscriptions.length; i++) {
       console.log("subscribing");
-      await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
-        method: "POST",
-        headers: {
-          "Client-ID": TWITCH_CLIENT_ID,
-          Authorization: "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: subscriptions[i],
-          version: "1",
-          condition: {
-            broadcaster_user_id: credentials.user_id,
+      await setTimeout(async () => {
+        await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
+          method: "POST",
+          headers: {
+            "Client-ID": TWITCH_CLIENT_ID,
+            Authorization: "Bearer " + accessToken,
+            "Content-Type": "application/json",
           },
-          transport: {
-            method: "websocket",
-            session_id: sessionId,
-          },
-        }),
-      });
+          body: JSON.stringify({
+            type: subscriptions[i],
+            version: "1",
+            condition: {
+              broadcaster_user_id: credentials.user_id,
+            },
+            transport: {
+              method: "websocket",
+              session_id: sessionId,
+            },
+          }),
+        });
+      }, 100);
     }
   }
 
@@ -132,8 +134,8 @@ function useTwitchAuth() {
   const [credentials, setCredentials] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
-  const TWITCH_CLIENT_ID = "";
-  const TWITCH_REDIRECT_URI = "https://localhost:5000/";
+  const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
+  const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app/";
 
   const checkToken = async () => {
     const token = localStorage.getItem("access_token");
