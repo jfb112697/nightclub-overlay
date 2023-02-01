@@ -76,27 +76,26 @@ function useChannelPredictions(accessToken, credentials, isMounted) {
 
     for (let i = 0; i < subscriptions.length; i++) {
       console.log("subscribing");
-      await setTimeout(async () => {
-        await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
-          method: "POST",
-          headers: {
-            "Client-ID": TWITCH_CLIENT_ID,
-            Authorization: "Bearer " + accessToken,
-            "Content-Type": "application/json",
+      await setTimeout(() => {}, 100);
+      await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
+        method: "POST",
+        headers: {
+          "Client-ID": TWITCH_CLIENT_ID,
+          Authorization: "Bearer " + accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: subscriptions[i],
+          version: "1",
+          condition: {
+            broadcaster_user_id: credentials.user_id,
           },
-          body: JSON.stringify({
-            type: subscriptions[i],
-            version: "1",
-            condition: {
-              broadcaster_user_id: credentials.user_id,
-            },
-            transport: {
-              method: "websocket",
-              session_id: sessionId,
-            },
-          }),
-        });
-      }, 100);
+          transport: {
+            method: "websocket",
+            session_id: sessionId,
+          },
+        }),
+      });
     }
   }
 

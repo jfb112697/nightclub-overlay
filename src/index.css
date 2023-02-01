@@ -508,6 +508,10 @@ body {
   color: #e0e1dd;
   font-size: 14pt;
   font-weight: normal;
+  width: 155px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dashboard-root {

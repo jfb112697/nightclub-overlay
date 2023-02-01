@@ -73,7 +73,9 @@ function PredictionBar(props) {
           ></div>
         </div>
         <div className="prediction-details" style={{ alignItems: "flex-end" }}>
-          <div className="prediction-label">{displayScore2 || "0"}%</div>
+          <div className="prediction-label" style={{ alignSelf: "flex-start" }}>
+            {displayScore2 || "0"}%
+          </div>
           <div className="option-name" style={{ textAlign: "right" }}>
             {props.outcomes[1].title}
           </div>

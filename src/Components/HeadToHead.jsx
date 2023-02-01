@@ -1,24 +1,14 @@
 import { React } from "react";
 import { useState, useEffect, useCallback } from "react";
 import { MatchRow } from "./PlayerRow";
-import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
-import TwitchJs from "twitch-js";
 import PredictionBar from "./PredictionBar";
 
 const HeadToHead = (props) => {
-  const { accessToken, credentials, TWITCH_CLIENT_ID } = useTwitchAuth();
-  const [isMounted, setIsMounted] = useState(false);
+  const outcomes = props.outcomes;
+  const predictions = props.predictions;
+  const isActive = props.isActive;
 
-  const [predictions, outcomes, isActive] = useChannelPredictions(
-    accessToken,
-    credentials,
-    isMounted
-  );
   const [playerPercents, setPlayerPercents] = useState([]);
-
-  useEffect(() => {
-    props.setActive(isActive);
-  }, [isActive]);
 
   useEffect(() => {
     if (outcomes && outcomes.length > 0) {
@@ -34,10 +24,6 @@ const HeadToHead = (props) => {
       ]);
     }
   }, [outcomes]);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   return (
     <>

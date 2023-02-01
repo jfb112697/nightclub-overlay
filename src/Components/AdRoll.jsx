@@ -1,27 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import RecentResults from "./RecentResults";
 import HeadToHead from "./HeadToHead";
 import nightclub from "../assets/nightclub.webm";
-import { useChannelPredictions } from "./TwitchAuth";
+import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
 
 const AdRoll = (props) => {
-  const [currentAdIndex, setCurrentAdIndex] = useState(1);
-  const [opacities, setOpacities] = useState([100, 0, 0]);
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [opacities, setOpacities] = useState([100, 0]);
   const recentResults = useRecentResults(props.ggId);
   const [opacity, setOpacity] = useState(100);
   const [isPredicting, setIsPredicting] = useState(false);
+  const { accessToken, credentials, TWITCH_CLIENT_ID } = useTwitchAuth();
+  const [isMounted, setIsMounted] = useState(false);
+  const videoRef = useRef(null);
+
+  const [predictions, outcomes, isActive] = useChannelPredictions(
+    accessToken,
+    credentials,
+    isMounted
+  );
+
   const defaultAd = (
     <video
-      key={1}
+      key={31203912}
       height="825px"
       src={nightclub}
       style={{ position: "relative", top: "-50px" }}
       autoPlay
       loop
+      muted
+      ref={videoRef}
+      onEnded={() => {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play();
+      }}
     />
   );
 
   const [ads, setAds] = useState([defaultAd]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     let newAds = [...ads];
@@ -31,6 +51,8 @@ const AdRoll = (props) => {
     if (recentResults && props.ggId) {
       newAds.push(<RecentResults key={3} results={recentResults} />);
     }
+    setOpacities([...opacities, 0]);
+
     setAds(newAds);
   }, [recentResults, props.ggId]);
 
@@ -41,31 +63,28 @@ const AdRoll = (props) => {
     filteredAds.map((v, i) => {
       console.log(v.type);
     });
-    if (
-      props.player1.h2hWins > 0 ||
-      props.player2.h2hWins > 0 ||
-      isPredicting
-    ) {
+    if (props.player1.h2hWins > 0 || props.player2.h2hWins > 0 || isActive) {
       console.log("adding h2h");
       filteredAds.push(
         <HeadToHead
           player1={props.player1}
           player2={props.player2}
-          setActive={setIsPredicting}
+          outcomes={outcomes}
+          predictions={predictions}
+          isActive={isActive}
         />
       );
     }
+
+    setOpacities([...opacities, 0]);
     setAds(filteredAds);
-  }, [props.player1.name, props.player2.name]);
+  }, [props.player1.name, props.player2.name, isActive]);
 
   useEffect(() => {
-    console.log("new opacities");
-    const newOpacities = Array(ads.length);
-    for (let i = 0; i < newOpacities.length; i++) {
-      newOpacities[i] === currentAdIndex ? 100 : 0;
+    if (currentAdIndex == 0 && ads.length == 0) {
+      return;
     }
-    setOpacities(newOpacities);
-    /* const intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       if (ads.length == 1 && currentAdIndex == 0) {
         return;
       }
@@ -79,16 +98,18 @@ const AdRoll = (props) => {
         setOpacity(100);
       }, 350);
     }, 7000);
-    return () => clearInterval(intervalId);*/
+    return () => clearInterval(intervalId);
   }, [ads]);
 
   useEffect(() => {
-    let newOpacities = [];
-    ads.map((v, i) => {
-      i === currentAdIndex ? (newOpacities[i] = 100) : (newOpacities[i] = 0);
-    });
+    let newOpacities = Array(ads.length);
+    for (let i = 0; i < newOpacities.length; i++) {
+      const o = i == currentAdIndex ? 100 : 0;
+      console.log(currentAdIndex + " " + o);
+      newOpacities[i] = o;
+    }
     setOpacities(newOpacities);
-  }, [currentAdIndex]);
+  }, [currentAdIndex, ads]);
 
   return (
     <div

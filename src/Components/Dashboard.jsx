@@ -3,6 +3,7 @@ import TwitchAuth, { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
 
 function Dashboard(props) {
   const [predictionTitle, setPredictionTitle] = useState("Who will win?");
+  const [votingTime, setVotingTime] = useState(120);
   const {
     accessToken,
     credentials,
@@ -29,7 +30,7 @@ function Dashboard(props) {
         broadcaster_id: credentials.user_id,
         title: predictionTitle,
         outcomes: [{ title: props.player1Name }, { title: props.player2Name }],
-        prediction_window: "300",
+        prediction_window: votingTime,
       }),
     });
     console.log(result);
@@ -82,6 +83,11 @@ function Dashboard(props) {
                   type="text"
                   value={predictionTitle}
                   onChange={(e) => setPredictionTitle(e.target.value)}
+                ></input>
+                <input
+                  type="number"
+                  value={votingTime}
+                  onChange={(e) => setVotingTime(e.target.value)}
                 ></input>
                 <button className="prediction-button" onClick={submitHandler}>
                   Start Prediction
