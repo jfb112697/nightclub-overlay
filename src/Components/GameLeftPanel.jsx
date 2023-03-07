@@ -9,7 +9,6 @@ const GameLeftPanel = (props) => {
 
   return (
     <div id="leftpanel">
-      <TwitchAuth />
       <AdRoll
         ggId={props.ggId}
         ggSlug={props.ggSlug}

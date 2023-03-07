@@ -9,8 +9,20 @@ import { React, useState, useEffect } from "react";
 import TwitchAuth from "./Components/TwitchAuth";
 import Dashboard from "./Components/Dashboard";
 
+function getPort(url) {
+  const urlParams = new URLSearchParams(url.search);
+  const port = urlParams.get('port');
+
+  if (!port) {
+    return 80;
+  }
+
+  return parseInt(port);
+}
+
 function App() {
-  const data = useFetchPoll("http://localhost/getCurrentValues");
+  const port = getPort(window.location);
+  const data = useFetchPoll(`http://localhost/getCurrentValues:${port}`);
   const nodata = { name: "No Data", score: 0, pronouns: "It/Its" };
   const [error, setError] = useState(null);
 
