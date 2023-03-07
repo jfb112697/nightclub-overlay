@@ -44,40 +44,42 @@ const AdRoll = (props) => {
   }, []);
 
   useEffect(() => {
-    let newAds = [...ads];
-    newAds = newAds.filter(
-      (component) => component.type.name !== "RecentResults"
-    );
+    const newAds = [...ads];
+    let rr = <RecentResults key={Math.random()} results={recentResults} />;
     if (recentResults && props.ggId) {
-      newAds.push(<RecentResults key={3} results={recentResults} />);
-    }
-    setOpacities([...opacities, 0]);
+      newAds.push(rr);
 
-    setAds(newAds);
-  }, [recentResults, props.ggId]);
+      setOpacities([...opacities, 0]);
+
+      setAds(newAds);
+    }
+
+    return () => {
+      let filterdAds = [...ads].filter(a => a != rr);
+      setAds(filterdAds);
+    }
+  }, [props.ggId]);
 
   useEffect(() => {
-    let filteredAds = ads.filter(
-      (component) => component.type.name !== "HeadToHead"
-    );
-    filteredAds.map((v, i) => {
-      console.log(v.type);
-    });
-    if (props.player1.h2hWins > 0 || props.player2.h2hWins > 0 || isActive) {
+    const newAds = [...ads];
+    const h2h = <HeadToHead
+      player1={props.player1}
+      player2={props.player2}
+      outcomes={outcomes}
+      predictions={predictions}
+      isActive={isActive}
+      key={Math.random()}
+    />;
+    if (props.player1.name || props.player2.name || isActive) {
       console.log("adding h2h");
-      filteredAds.push(
-        <HeadToHead
-          player1={props.player1}
-          player2={props.player2}
-          outcomes={outcomes}
-          predictions={predictions}
-          isActive={isActive}
-        />
-      );
+      newAds.push(h2h);
+      setOpacities([...opacities, 0]);
+      setAds(newAds);
     }
-
-    setOpacities([...opacities, 0]);
-    setAds(filteredAds);
+    return () => {
+      let filterdAds = [...ads].filter(a => a != h2h);
+      setAds(filterdAds)
+    };
   }, [props.player1.name, props.player2.name, isActive]);
 
   useEffect(() => {
@@ -101,15 +103,14 @@ const AdRoll = (props) => {
     return () => clearInterval(intervalId);
   }, [ads]);
 
+
   useEffect(() => {
-    let newOpacities = Array(ads.length);
-    for (let i = 0; i < newOpacities.length; i++) {
-      const o = i == currentAdIndex ? 100 : 0;
-      console.log(currentAdIndex + " " + o);
-      newOpacities[i] = o;
+    let newOpacities = [];
+    for (let i = 0; i < ads.length; i++) {
+      newOpacities.push(currentAdIndex == i ? 100 : 0);
     }
     setOpacities(newOpacities);
-  }, [currentAdIndex, ads]);
+  }, [ads, currentAdIndex]);
 
   return (
     <div
