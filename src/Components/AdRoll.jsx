@@ -36,6 +36,7 @@ const AdRoll = (props) => {
         id: 1,
         type: 'video',
         url: nightclub,
+        height: "825px"
       },
       {
         id: 2,
@@ -84,45 +85,32 @@ const AdRoll = (props) => {
   }, [ads]);
 
   useEffect(() => {
-    setOpacity(opacities[0]);
-  }, [opacities]);
-
-  useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
 
-  useEffect(() => {
-    if (ads.length > 1) {
-      let newOpacities = [];
-      for (let i = 0; i < ads.length; i++) {
-        newOpacities.push(currentAdIndex == i ? 100 : 0);
-      }
-      setOpacities(newOpacities);
+  function getAdComponent(ad) {
+    let adComponent;
+    switch (ad.type) {
+      case 'video':
+        adComponent = <video src={ad.url} height={ad.height} autoPlay loop muted style={{ position: "relative", top: "-50px" }} />;
+        break;
+      case 'custom':
+        const CustomAdComponent = ad.component;
+        adComponent = <CustomAdComponent {...ad} />;
+        break;
+      default:
+        adComponent = null;
     }
-  }, [ads]);
-
+    return (
+      <div key={ad.id} className="ad">
+        {adComponent}
+      </div>
+    );
+  }
   return (
     <div className="ad-container" style={{ transition: 'opacity .33s', opacity }}>
-      {ads.map((ad, index) => {
-        let adComponent;
-        switch (ad.type) {
-          case 'video':
-            adComponent = <video src={ad.url} height="825px" autoPlay loop muted style={{ position: "relative", top: "-50px" }} />;
-            break;
-          case 'custom':
-            const CustomAdComponent = ad.component;
-            adComponent = <CustomAdComponent {...ad} />;
-            break;
-          default:
-            adComponent = null;
-        }
-        return (
-          <div key={ad.id} className={`ad ${index === currentAdIndex ? 'active' : ''}`}>
-            {adComponent}
-          </div>
-        );
-      })}
+      {getAdComponent(ads[currentAdIndex])}
     </div>
   );
 };
