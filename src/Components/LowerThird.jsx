@@ -5,7 +5,7 @@ import PredictionBar from "./PredictionBar";
 import TwitchAuth, { useChannelPredictions, useTwitchAuth } from "./TwitchAuth";
 
 function LowerThird(props) {
-  const commentators = props.data ? props.data.Commentators : null;
+  const commentators = props.data && props.data.Commentators && props.showCommentary == null || props.showCommentary == true ? props.data.Commentators : null;
   const { accessToken, credentials } = useTwitchAuth();
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
@@ -19,11 +19,11 @@ function LowerThird(props) {
       setPlayerPercents([
         Math.ceil(
           (outcomes[0].channel_points * 100) /
-            (outcomes[0].channel_points + outcomes[1].channel_points)
+          (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
         Math.floor(
           (outcomes[1].channel_points * 100) /
-            (outcomes[0].channel_points + outcomes[1].channel_points)
+          (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
       ]);
     }
@@ -33,17 +33,17 @@ function LowerThird(props) {
       <div className="commentary-container">
         {commentators && props.data.lowerThird.Commentary
           ? commentators.map((c) => {
-              return (
-                <div className="commentary-block" key={Math.random()}>
-                  <div className="commentary-name">{c.Name}</div>
-                  {c.Twitter ? (
-                    <div className="commentary-twitter">@{c.Twitter}</div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              );
-            })
+            return (
+              <div className="commentary-block" key={Math.random()}>
+                <div className="commentary-name">{c.Name}</div>
+                {c.Twitter ? (
+                  <div className="commentary-twitter">@{c.Twitter}</div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            );
+          })
           : ""}
       </div>
 
@@ -59,15 +59,15 @@ function LowerThird(props) {
                   {isActive
                     ? "Live Prediction"
                     : props.data.lowerThird.LeftAnnotationText +
-                      ": " +
-                      props.data.lowerThird.TitleText}
+                    ": " +
+                    props.data.lowerThird.TitleText}
                 </div>
                 <div>
                   {isActive
                     ? "Live Prediction"
                     : props.data.lowerThird.LeftAnnotationText +
-                      ": " +
-                      props.data.lowerThird.TitleText}
+                    ": " +
+                    props.data.lowerThird.TitleText}
                 </div>
               </>
             )}
@@ -77,8 +77,8 @@ function LowerThird(props) {
             {isActive
               ? predictions.event.title
               : props.data &&
-                "The Nightclub S6E4 " + props.data &&
-                props.data.round}
+              "The Nightclub S6E4 " + props.data &&
+              props.data.round}
           </div>
         </div>
         {isActive && (

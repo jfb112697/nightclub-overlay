@@ -4,9 +4,9 @@ import { MatchRow } from "./PlayerRow";
 import PredictionBar from "./PredictionBar";
 
 const HeadToHead = (props) => {
-  const outcomes = props.outcomes;
-  const predictions = props.predictions;
-  const isActive = props.isActive;
+  const outcomes = props.apiData.outcomes;
+  const predictions = props.apiData.predictions;
+  const isActive = props.apiData.isActive;
 
   const [playerPercents, setPlayerPercents] = useState([]);
 

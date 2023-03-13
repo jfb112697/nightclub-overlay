@@ -22,7 +22,7 @@ function getPort(url) {
 
 function App() {
   const port = getPort(window.location);
-  const data = useFetchPoll(`http://localhost/getCurrentValues:${port}`);
+  const data = useFetchPoll(`http://localhost/getCurrentValues`);
   const nodata = { name: "No Data", score: 0, pronouns: "It/Its" };
   const [error, setError] = useState(null);
 
@@ -75,6 +75,10 @@ function App() {
           <Route
             path="/lower-third"
             element={<LowerThird data={data} />}
+          ></Route>
+          <Route
+            path="/lower-third-nocom"
+            element={<LowerThird data={data} showCommentary={false} />}
           ></Route>
           <Route
             path="/dashboard"

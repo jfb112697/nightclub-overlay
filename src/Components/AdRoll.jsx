@@ -6,13 +6,23 @@ import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
 
 const AdRoll = (props) => {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [opacities, setOpacities] = useState([100, 0]);
+  const [opacities, setOpacities] = useState([100]);
   const recentResults = useRecentResults(props.ggId);
   const [opacity, setOpacity] = useState(100);
   const [isPredicting, setIsPredicting] = useState(false);
   const { accessToken, credentials, TWITCH_CLIENT_ID } = useTwitchAuth();
   const [isMounted, setIsMounted] = useState(false);
   const videoRef = useRef(null);
+  const [ads, setAds] = useState([{
+    id: 1,
+    type: 'video',
+    url: nightclub,
+    height: "825px",
+
+
+
+  }]);
+
 
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
@@ -20,111 +30,96 @@ const AdRoll = (props) => {
     isMounted
   );
 
-  const defaultAd = (
-    <video
-      key={31203912}
-      height="825px"
-      src={nightclub}
-      style={{ position: "relative", top: "-50px" }}
-      autoPlay
-      loop
-      muted
-      ref={videoRef}
-      onEnded={() => {
-        videoRef.current.currentTime = 0;
-        videoRef.current.play();
-      }}
-    />
-  );
+  useEffect(() => {
+    const adsToDisplay = [
+      {
+        id: 1,
+        type: 'video',
+        url: nightclub,
+      },
+      {
+        id: 2,
+        type: 'custom',
+        component: RecentResults,
+        apiData: recentResults,
+      },
+      {
+        id: 3,
+        type: 'custom',
+        component: HeadToHead,
+        player1: props.player1,
+        player2: props.player2,
+        apiData:
+          outcomes && isActive === true
+            ? { outcomes: outcomes, predictions: predictions, isActive: isActive }
+            : null,
+      },
+    ];
 
-  const [ads, setAds] = useState([defaultAd]);
+    const filteredAds = adsToDisplay.filter((ad) => {
+      if (ad.type === 'video' || ad.type === 'image') {
+        return true;
+      } else if (ad.type === 'custom') {
+        const { apiData } = ad;
+        // Only show ad if apiData is not null
+        return apiData !== null;
+      } else {
+        return false;
+      }
+    });
+
+    setAds(filteredAds);
+  }, [recentResults, isActive]);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (ads.length == 0 && currentAdIndex == 0) {
+        return;
+      }
+      setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [ads]);
+
+  useEffect(() => {
+    setOpacity(opacities[0]);
+  }, [opacities]);
 
   useEffect(() => {
     setIsMounted(true);
+    return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
-    const newAds = [...ads];
-    let rr = <RecentResults key={Math.random()} results={recentResults} />;
-    if (recentResults && props.ggId) {
-      newAds.push(rr);
-
-      setOpacities([...opacities, 0]);
-
-      setAds(newAds);
-    }
-
-    return () => {
-      let filterdAds = [...ads].filter(a => a != rr);
-      setAds(filterdAds);
-    }
-  }, [props.ggId]);
-
-  useEffect(() => {
-    const newAds = [...ads];
-    const h2h = <HeadToHead
-      player1={props.player1}
-      player2={props.player2}
-      outcomes={outcomes}
-      predictions={predictions}
-      isActive={isActive}
-      key={Math.random()}
-    />;
-    if (props.player1.name || props.player2.name || isActive) {
-      console.log("adding h2h");
-      newAds.push(h2h);
-      setOpacities([...opacities, 0]);
-      setAds(newAds);
-    }
-    return () => {
-      let filterdAds = [...ads].filter(a => a != h2h);
-      setAds(filterdAds)
-    };
-  }, [props.player1.name, props.player2.name, isActive]);
-
-  useEffect(() => {
-    if (currentAdIndex == 0 && ads.length == 0) {
-      return;
-    }
-    const intervalId = setInterval(() => {
-      if (ads.length == 1 && currentAdIndex == 0) {
-        return;
+    if (ads.length > 1) {
+      let newOpacities = [];
+      for (let i = 0; i < ads.length; i++) {
+        newOpacities.push(currentAdIndex == i ? 100 : 0);
       }
-      setOpacity(0);
-      setTimeout(() => {
-        setCurrentAdIndex(
-          (currentAdIndex) => (currentAdIndex + 1) % ads.length
-        );
-      }, 330);
-      setTimeout(() => {
-        setOpacity(100);
-      }, 350);
-    }, 7000);
-    return () => clearInterval(intervalId);
+      setOpacities(newOpacities);
+    }
   }, [ads]);
 
-
-  useEffect(() => {
-    let newOpacities = [];
-    for (let i = 0; i < ads.length; i++) {
-      newOpacities.push(currentAdIndex == i ? 100 : 0);
-    }
-    setOpacities(newOpacities);
-  }, [ads, currentAdIndex]);
-
   return (
-    <div
-      className="ad-container"
-      style={{ transition: "opacity .33s", opacity: opacity }}
-    >
-      {ads.map((v, i) => {
-        let adOpacity = 0;
-        if (currentAdIndex === i) {
-          adOpacity = 100;
+    <div className="ad-container" style={{ transition: 'opacity .33s', opacity }}>
+      {ads.map((ad, index) => {
+        let adComponent;
+        switch (ad.type) {
+          case 'video':
+            adComponent = <video src={ad.url} height="825px" autoPlay loop muted style={{ position: "relative", top: "-50px" }} />;
+            break;
+          case 'custom':
+            const CustomAdComponent = ad.component;
+            adComponent = <CustomAdComponent {...ad} />;
+            break;
+          default:
+            adComponent = null;
         }
         return (
-          <div className="ad" style={{ opacity: opacities[i] }}>
-            {v}
+          <div key={ad.id} className={`ad ${index === currentAdIndex ? 'active' : ''}`}>
+            {adComponent}
           </div>
         );
       })}
