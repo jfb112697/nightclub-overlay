@@ -23,7 +23,6 @@ function getPort(url) {
 function App() {
   const port = getPort(window.location);
   const data = useFetchPoll(`http://localhost/getCurrentValues`);
-  const nodata = { name: "No Data", score: 0, pronouns: "It/Its" };
   const [error, setError] = useState(null);
 
   const [id, setId] = useState(null);

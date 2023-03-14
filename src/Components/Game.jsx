@@ -5,7 +5,7 @@ import GameContainer from "./GameContainer";
 import Scorebar from "./Scorebar";
 
 export const Game = (props) => {
-  const nodata = { name: "No Data", score: 0, pronouns: "It/Its", h2hWins: 0 };
+  const nodata = { name: "No Data", score: 0, pronouns: "It/Its", h2hWins: -1 };
 
   return (
     <>

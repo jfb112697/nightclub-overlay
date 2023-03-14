@@ -16,11 +16,11 @@ const HeadToHead = (props) => {
       setPlayerPercents([
         Math.ceil(
           (outcomes[0].channel_points * 100) /
-            (outcomes[0].channel_points + outcomes[1].channel_points)
+          (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
         Math.floor(
           (outcomes[1].channel_points * 100) /
-            (outcomes[0].channel_points + outcomes[1].channel_points)
+          (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
       ]);
     }
@@ -29,15 +29,16 @@ const HeadToHead = (props) => {
   return (
     <>
       <div className="ad" style={{ height: "170px" }}>
-        <h1 style={{ fontSize: "34pt", marginTop: 0 }}>Head to Head</h1>
+        {player1.h2hWins > -1 && player2.h2hWins > -1 &&
+          <><h1 style={{ fontSize: "34pt", marginTop: 0 }}>Head to Head</h1>
 
-        <MatchRow
-          key={Math.random()}
-          match={[
-            { name: player1.name, score: player1.h2hWins },
-            { name: player2.name, score: player2.h2hWins },
-          ]}
-        />
+            <MatchRow
+              key={Math.random()}
+              match={[
+                { name: player1.name, score: player1.h2hWins },
+                { name: player2.name, score: player2.h2hWins },
+              ]}
+            /></>}
         {isActive && (
           <>
             <h1 style={{ marginTop: 0, marginBottom: "10px" }}>

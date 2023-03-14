@@ -48,12 +48,12 @@ const AdRoll = (props) => {
         player1: props.player1,
         player2: props.player2,
         apiData:
-          (outcomes && isActive) || true === true
+          (outcomes && isActive) || (props.player1.h2hWins > -1 && props.player2.h2hWins > -1) === true
             ? {
-                outcomes: outcomes,
-                predictions: predictions,
-                isActive: isActive,
-              }
+              outcomes: outcomes,
+              predictions: predictions,
+              isActive: isActive,
+            }
             : null,
       },
     ];
