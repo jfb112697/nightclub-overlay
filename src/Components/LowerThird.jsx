@@ -73,7 +73,6 @@ function LowerThird(props) {
             )}
           </div>
           <div className="lower-third-text-secondary">
-            <TwitchAuth />
             {isActive
               ? predictions.event.title
               : props.data &&
