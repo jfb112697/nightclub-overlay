@@ -1,12 +1,13 @@
-import { React } from "react";
+import { memo, React } from "react";
 import { useState, useEffect, useCallback } from "react";
 import { MatchRow } from "./PlayerRow";
 import PredictionBar from "./PredictionBar";
 
 const HeadToHead = (props) => {
-  const outcomes = props.apiData.outcomes;
-  const predictions = props.apiData.predictions;
-  const isActive = props.apiData.isActive;
+  const { player1, player2, apiData, outcomes, predictions } = props;
+  const [headToHeadData, setHeadToHeadData] = useState(apiData);
+
+  const isActive = headToHeadData.isActive;
 
   const [playerPercents, setPlayerPercents] = useState([]);
 
@@ -15,11 +16,11 @@ const HeadToHead = (props) => {
       setPlayerPercents([
         Math.ceil(
           (outcomes[0].channel_points * 100) /
-          (outcomes[0].channel_points + outcomes[1].channel_points)
+            (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
         Math.floor(
           (outcomes[1].channel_points * 100) /
-          (outcomes[0].channel_points + outcomes[1].channel_points)
+            (outcomes[0].channel_points + outcomes[1].channel_points)
         ),
       ]);
     }
@@ -33,8 +34,8 @@ const HeadToHead = (props) => {
         <MatchRow
           key={Math.random()}
           match={[
-            { name: props.player1.name, score: props.player1.h2hWins },
-            { name: props.player2.name, score: props.player2.h2hWins },
+            { name: player1.name, score: player1.h2hWins },
+            { name: player2.name, score: player2.h2hWins },
           ]}
         />
         {isActive && (

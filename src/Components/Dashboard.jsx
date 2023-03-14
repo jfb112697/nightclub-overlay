@@ -98,14 +98,14 @@ function Dashboard(props) {
                 <h3>Pick winner</h3>
                 <button
                   onClick={() => {
-                    endPrediction(1);
+                    endPrediction(0);
                   }}
                 >
                   {props.player1Name}
                 </button>
                 <button
                   onClick={() => {
-                    endPrediction(0);
+                    endPrediction(1);
                   }}
                 >
                   {props.player2Name}

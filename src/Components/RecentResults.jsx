@@ -12,10 +12,10 @@ const RecentResults = (props) => {
   const [nodes, setNodes] = useState(null);
 
   useEffect(() => {
-    if (props.results.data) {
-      setNodes(props.results.data.event.sets.nodes);
+    if (props.apiData.results.data) {
+      setNodes(props.apiData.results.data.event.sets.nodes);
     }
-    console.log(props.results);
+    console.log(props.apiData);
   }, []);
 
   return (

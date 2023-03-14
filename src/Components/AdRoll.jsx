@@ -6,23 +6,20 @@ import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
 
 const AdRoll = (props) => {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [opacities, setOpacities] = useState([100]);
   const recentResults = useRecentResults(props.ggId);
-  const [opacity, setOpacity] = useState(100);
-  const [isPredicting, setIsPredicting] = useState(false);
   const { accessToken, credentials, TWITCH_CLIENT_ID } = useTwitchAuth();
   const [isMounted, setIsMounted] = useState(false);
-  const videoRef = useRef(null);
-  const [ads, setAds] = useState([{
-    id: 1,
-    type: 'video',
-    url: nightclub,
-    height: "825px",
-
-
-
-  }]);
-
+  const [opacity, setOpacity] = useState(100);
+  const [intervalId, setIntervalId] = useState();
+  const [ads, setAds] = useState([
+    {
+      id: 1,
+      type: "video",
+      url: nightclub,
+      height: "825px",
+    },
+  ]);
+  const [currentAd, setCurrentAd] = useState(ads[0]);
 
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
@@ -34,33 +31,37 @@ const AdRoll = (props) => {
     const adsToDisplay = [
       {
         id: 1,
-        type: 'video',
+        type: "video",
         url: nightclub,
-        height: "825px"
+        height: "825px",
       },
       {
         id: 2,
-        type: 'custom',
+        type: "custom",
         component: RecentResults,
-        apiData: recentResults,
+        apiData: recentResults && { results: recentResults },
       },
       {
         id: 3,
-        type: 'custom',
+        type: "custom",
         component: HeadToHead,
         player1: props.player1,
         player2: props.player2,
         apiData:
-          outcomes && isActive === true
-            ? { outcomes: outcomes, predictions: predictions, isActive: isActive }
+          (outcomes && isActive) || true === true
+            ? {
+                outcomes: outcomes,
+                predictions: predictions,
+                isActive: isActive,
+              }
             : null,
       },
     ];
 
     const filteredAds = adsToDisplay.filter((ad) => {
-      if (ad.type === 'video' || ad.type === 'image') {
+      if (ad.type === "video" || ad.type === "image") {
         return true;
-      } else if (ad.type === 'custom') {
+      } else if (ad.type === "custom") {
         const { apiData } = ad;
         // Only show ad if apiData is not null
         return apiData !== null;
@@ -70,19 +71,27 @@ const AdRoll = (props) => {
     });
 
     setAds(filteredAds);
-  }, [recentResults, isActive]);
-
+  }, [recentResults, isActive, currentAdIndex, outcomes]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (ads.length == 0 && currentAdIndex == 0) {
-        return;
-      }
+    setOpacity(0);
+    setTimeout(() => setCurrentAd(ads[currentAdIndex]), 330);
+    setTimeout(() => {
+      setOpacity(100);
+    }, 335);
+  }, [currentAdIndex]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Update the current ad index
+      console.log((currentAdIndex + 1) % ads.length);
       setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
     }, 10000);
 
-    return () => clearInterval(interval);
-  }, [ads]);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [ads.length]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -92,12 +101,27 @@ const AdRoll = (props) => {
   function getAdComponent(ad) {
     let adComponent;
     switch (ad.type) {
-      case 'video':
-        adComponent = <video src={ad.url} height={ad.height} autoPlay loop muted style={{ position: "relative", top: "-50px" }} />;
+      case "video":
+        adComponent = (
+          <video
+            src={ad.url}
+            height={ad.height}
+            autoPlay
+            loop
+            muted
+            style={{ position: "relative", top: "-50px" }}
+          />
+        );
         break;
-      case 'custom':
+      case "custom":
         const CustomAdComponent = ad.component;
-        adComponent = <CustomAdComponent {...ad} />;
+        adComponent = (
+          <CustomAdComponent
+            outcomes={outcomes}
+            predictions={predictions}
+            {...ad}
+          />
+        );
         break;
       default:
         adComponent = null;
@@ -109,8 +133,11 @@ const AdRoll = (props) => {
     );
   }
   return (
-    <div className="ad-container" style={{ transition: 'opacity .33s', opacity }}>
-      {getAdComponent(ads[currentAdIndex])}
+    <div
+      className="ad-container"
+      style={{ transition: "opacity .33s", opacity }}
+    >
+      {getAdComponent(currentAd)}
     </div>
   );
 };
