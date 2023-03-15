@@ -13,11 +13,14 @@ const AdRoll = (props) => {
   const [intervalId, setIntervalId] = useState();
   const [ads, setAds] = useState([
     {
-      id: 1,
-      type: "video",
-      url: nightclub,
-      height: "825px",
-    },
+      element: () => <video
+        src={nightclub}
+        height="825px"
+        autoPlay
+        loop
+        muted
+        style={{ position: "relative", top: "-50px" }} />
+    }
   ]);
   const [currentAd, setCurrentAd] = useState(ads[0]);
 
@@ -30,61 +33,44 @@ const AdRoll = (props) => {
   useEffect(() => {
     const adsToDisplay = [
       {
-        id: 1,
-        type: "video",
-        url: nightclub,
-        height: "825px",
+        element: () => <video
+          src={nightclub}
+          height="825px"
+          autoPlay
+          loop
+          muted
+          style={{ position: "relative", top: "-50px" }} />
       },
       {
-        id: 2,
-        type: "custom",
-        component: RecentResults,
-        apiData: recentResults && { results: recentResults },
+        element: () => recentResults ? <RecentResults results={recentResults} /> : null,
       },
       {
-        id: 3,
-        type: "custom",
-        component: HeadToHead,
-        player1: props.player1,
-        player2: props.player2,
-        apiData:
+        element: () =>
           (outcomes && isActive) || (props.player1.h2hWins > -1 && props.player2.h2hWins > -1) === true
-            ? {
-              outcomes: outcomes,
-              predictions: predictions,
-              isActive: isActive,
-            }
+            ? <HeadToHead outcomes={outcomes} predictions={predictions} isActive={isActive} />
             : null,
       },
     ];
 
     const filteredAds = adsToDisplay.filter((ad) => {
-      if (ad.type === "video" || ad.type === "image") {
-        return true;
-      } else if (ad.type === "custom") {
-        const { apiData } = ad;
-        // Only show ad if apiData is not null
-        return apiData !== null;
-      } else {
-        return false;
-      }
+      const element = ad.element();
+      return element !== null;
     });
 
     setAds(filteredAds);
   }, [recentResults, isActive, currentAdIndex, outcomes]);
 
-  useEffect(() => {
-    setOpacity(0);
-    setTimeout(() => setCurrentAd(ads[currentAdIndex]), 330);
+  useEffect(() => { //When currentAdIndex changes
+    setOpacity(0); //Fade out ad container
+    setTimeout(() => setCurrentAd(ads[currentAdIndex]), 330); //Change active ad after fade-out finished
     setTimeout(() => {
-      setOpacity(100);
+      setOpacity(100); //Fade back in after 335ms
     }, 335);
   }, [currentAdIndex]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       // Update the current ad index
-      console.log((currentAdIndex + 1) % ads.length);
       setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
     }, 10000);
 
@@ -98,46 +84,13 @@ const AdRoll = (props) => {
     return () => setIsMounted(false);
   }, []);
 
-  function getAdComponent(ad) {
-    let adComponent;
-    switch (ad.type) {
-      case "video":
-        adComponent = (
-          <video
-            src={ad.url}
-            height={ad.height}
-            autoPlay
-            loop
-            muted
-            style={{ position: "relative", top: "-50px" }}
-          />
-        );
-        break;
-      case "custom":
-        const CustomAdComponent = ad.component;
-        adComponent = (
-          <CustomAdComponent
-            outcomes={outcomes}
-            predictions={predictions}
-            {...ad}
-          />
-        );
-        break;
-      default:
-        adComponent = null;
-    }
-    return (
-      <div key={ad.id} className="ad">
-        {adComponent}
-      </div>
-    );
-  }
+
   return (
     <div
       className="ad-container"
       style={{ transition: "opacity .33s", opacity }}
     >
-      {getAdComponent(currentAd)}
+      {currentAd.element()}
     </div>
   );
 };
