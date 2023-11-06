@@ -1,70 +1,69 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
-const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app/";
+const TWITCH_REDIRECT_URI = "https://localhost:5173";
 
 function useChannelPredictions(accessToken, credentials, isMounted) {
   const [predictions, setPredictions] = useState({});
   const [outcomes, setOutcomes] = useState([]);
   const [isActive, setIsActive] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [sessionId, setSessionId] = useState(null);
-  const [ws, setWs] = useState(null);
+
+
+  const wsRef = useRef(null); // Use useRef here
 
   useEffect(() => {
     if (accessToken && credentials && isMounted) {
-      const ws = new WebSocket("wss://eventsub-beta.wss.twitch.tv/ws");
+      if (!wsRef.current) {
+        // Only create new WebSocket if there's none
+        console.log("connecting websocket");
+        wsRef.current = new WebSocket("wss://eventsub.wss.twitch.tv/ws");
 
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+        wsRef.current.onmessage = (event) => {
+          const data = JSON.parse(event.data);
 
-        console.log(data);
+          console.log(data);
 
-        if (data.metadata.message_type == "session_welcome") {
-          setSessionId(data.payload.session.id);
-          if (credentials) {
-            subscribeToPredictions(data.payload.session.id);
-          }
-        } else if (
-          data.metadata.message_type === "notification" &&
-          data.payload
-        ) {
-          if (
-            data.payload.subscription.type == "channel.prediction.progress" ||
-            data.payload.subscription.type == "channel.prediction.begin"
+          if (data.metadata.message_type == "session_welcome") {
+            setSessionId(data.payload.session.id);
+            if (credentials) {
+              subscribeToPredictions(data.payload.session.id);
+            }
+          } else if (
+            data.metadata.message_type === "notification" &&
+            data.payload
           ) {
-            setOutcomes(data.payload.event.outcomes);
-            setPredictions(data.payload);
-            setIsActive(true);
-          } else {
-            setPredictions(null);
-            setOutcomes(null);
-            setIsActive(false);
+            if (
+              data.payload.subscription.type == "channel.prediction.progress" ||
+              data.payload.subscription.type == "channel.prediction.begin"
+            ) {
+              setOutcomes(data.payload.event.outcomes);
+              setPredictions(data.payload);
+              setIsActive(true);
+            } else {
+              setPredictions(null);
+              setOutcomes(null);
+              setIsActive(false);
+            }
           }
-        }
-      };
+        };
+        wsRef.current.onclose = () => {
+          wsRef.current = null;
+        };
 
-      ws.onclose = () => {
-        setWs(null);
-      };
-
-      setWs(ws);
-
-      window.addEventListener("beforeunload", () => {
-        ws.close();
-      });
+        window.addEventListener("beforeunload", () => {
+          wsRef.current.close();
+        });
+      }
 
       return () => {
         window.removeEventListener("beforeunload", () => {});
-        ws.close();
+        if (wsRef.current) {
+          wsRef.current.close();
+          wsRef.current = null;
+        }
       };
     }
-
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
   }, [accessToken, credentials]);
 
   async function subscribeToPredictions(sessionId) {
@@ -134,7 +133,7 @@ function useTwitchAuth() {
   const [accessToken, setAccessToken] = useState(null);
 
   const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
-  const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app/";
+  const TWITCH_REDIRECT_URI = "https://localhost:5173/";
 
   const checkToken = async () => {
     const token = localStorage.getItem("access_token");
@@ -146,10 +145,12 @@ function useTwitchAuth() {
           },
         });
         if (!response.ok) {
-          localStorage.removeItem("access_token");
-          setIsAuthenticated(false);
-          setCredentials(null);
-        } else {
+  localStorage.removeItem("access_token");
+  setIsAuthenticated(false);
+  setCredentials(null);
+  throw new Error('Token validation failed');
+}
+else {
           const json = await response.json();
           setIsAuthenticated(true);
           setCredentials(json);

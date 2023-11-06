@@ -12,14 +12,15 @@ function Dashboard(props) {
     handleLogout,
     TWITCH_CLIENT_ID,
   } = useTwitchAuth();
-  const [predictions, outcomes, isActive] = useChannelPredictions(
-    accessToken,
-    credentials,
-    true
-  );
+
+    const [predictions, outcomes, isActive] = useChannelPredictions(
+      accessToken,
+      credentials,
+      true
+    );
 
   async function submitHandler() {
-    const result = fetch("https://api.twitch.tv/helix/predictions", {
+    const result = await fetch("https://api.twitch.tv/helix/predictions", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + accessToken,
