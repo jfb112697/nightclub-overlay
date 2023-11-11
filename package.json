@@ -2,7 +2,7 @@
   "name": "nightclub",
   "private": true,
   "version": "0.0.0",
-  "proxy": "https://localhost:80",
+  "proxy": "http://localhost:80",
   "type": "module",
   "homepage": ".",
   "scripts": {

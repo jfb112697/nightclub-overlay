@@ -14,7 +14,6 @@ Round Info - Figtree Medium 24pt
 Partnership - Figtree Medium Italics 18p
 */
 :root {
-  --neon-border: solid #00b4d8;
 }
 body {
   padding: 0;
@@ -37,33 +36,36 @@ body {
   min-height: 1080px;
   min-width: 1920px;
   left: 0;
+  background-image:url("/function-static.png");
   top: 0;
   padding: 0;
-  background: #415a77 url("/AbstractBackground.svg");
-  background-blend-mode: multiply;
-  mask: url("data: image/svg+xml, %3csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' %3e%3crect x='25' y='25' width='690' height='380' rx='10px' /%3e%3crect x='740' y='25' width='1160' height='900' rx='10px' /%3e%3crect x='740' y='850' width='1160' height='125' /%3e%3c/svg%3e"),
-    linear-gradient(#fff, #fff);
-  mask-composite: exclude;
-  -webkit-mask: url("data: image/svg+xml, %3csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' %3e%3crect x='25' y='25' width='690' height='380' rx='10px' /%3e%3crect x='740' y='25' width='1160' height='900' rx='10px' /%3e%3crect x='740' y='850' width='1160' height='125' /%3e%3c/svg%3e"),
-    linear-gradient(#fff, #fff);
-
-  -webkit-mask-composite: destination-out;
+}
+.color-burn {
+  position: absolute;
+  top: 0;
+  width: 960px;  /* Half of the #gameroot width */
+  height: 1080px;
+  background: url('function-bg.jpg') no-repeat center center;
+  background-size: auto 1080px;  /* Scaling the height to 1080px */
+  mix-blend-mode: color-burn;
+  opacity: 1;  /* Making sure the image is fully opaque */
+}
+.color-burn:nth-child(2) {
+  left: 960px;  /* Positioning the second instance to the right */
 }
 #round-container {
   position: absolute;
-  left: 740px;
-  width: 1160px;
-  top: 22px;
+  left: 730px;
+  width: 1159px;
+  top: 24px;
   display: flex;
   justify-content: center;
 }
 #newround {
-  background: #415a77 url("/AbstractBackground.svg");
   background-blend-mode: multiply;
   color: #e0e1dd;
   font-weight: 200;
-  width: 240px;
-  border: solid #00b4d8;
+  width: 231px;
   border-width: 0 3px 3px 3px;
   border-radius: 0 0 10px 10px;
   background-position-x: -20px;
@@ -73,28 +75,28 @@ body {
   background-size: 300%;
   font-size: 14pt;
   line-height: 1.4;
+  min-height: 53px;
+  top: 2px;
+  position: relative;
+  text-align:center;
 }
 #camera {
-  border: solid #00b4d8;
-
   position: absolute;
-  left: 20px;
-  height: 382px;
-  top: 21px;
-  width: 693px;
+  left: 26px;
+  height: 375px;
+  top: 26px;
+  width: 670px;
   border-radius: 15px;
   background: transparent;
 }
 #leftpanel {
-  border: solid #00b4d8 3px;
   position: absolute;
-  width: 690px;
-  top: 437px;
-  left: 22px;
+  width: 670px;
+  top: 431px;
+  left: 25px;
   height: 591px;
   border-radius: 13px;
   gap: 15px;
-  background: #1b263b url("/SubwaySVGTest2.svg");
   background-position-x: 0%;
   background-position-y: 0%;
   background-size: auto;
@@ -107,27 +109,24 @@ body {
   padding-top: 25px;
 }
 #gamecontainer {
-  border: solid #00b4d8 3px;
   position: absolute;
-  width: 1160px;
+  width: 1155px;
   height: 950px;
-  top: 22px;
-  left: 737px;
+  top: 24px;
+  left: 729px;
   border-radius: 13px 13px 0 0;
 }
 #scorebar {
-  border: solid #00b4d8;
   border-width: 0 3px 3px 3px;
   position: absolute;
   top: 978px;
-  width: 1160px;
-  left: 737px;
+  width: 1161px;
+  left: 729px;
   height: 75px;
   display: flex;
   justify-content: space-between;
   border-radius: 0 0 10px 10px;
   color: #e0e1dd;
-  background: #1b263b url("/SubwaySVGTest2.svg");
   background-size: 52%;
   background-position-x: -599px;
   background-position-y: -105px;
@@ -143,7 +142,6 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 50pt;
-  border: solid #00b4d8;
   color: #0d1b2a;
   font-weight: 800;
 }
@@ -159,19 +157,13 @@ body {
   font-size: 12pt;
 }
 .char-container {
-  background: linear-gradient(
-    180deg,
-    rgba(197, 30, 147, 1) 0%,
-    rgba(253, 140, 251, 1) 100%
-  );
-  border: solid #00b4d8;
 
-  width: 119px;
-  height: 91px;
+  width: 116px;
+  height: 86px;
   margin-bottom: 20px;
   overflow: hidden;
   position: relative;
-  bottom: 19px;
+  bottom: 14px;
 }
 #round {
   color: #e0e1dd;
@@ -219,7 +211,7 @@ body {
   height: 100px;
 }
 .sponsor-images {
-  width: 50%;
+  width: 85%;
   display: flex;
   justify-content: space-around;
 }
@@ -366,33 +358,41 @@ body {
   position: absolute;
   top: 20px;
 }
+.lower-third-root {
+  background-image:url('/function-l3-static.png');
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+}
 .lower-third-container {
   position: absolute;
   bottom: 75px;
-  border: solid #00b4d8;
   border-width: 6px 0;
   height: 120px;
   width: 1850px;
-  background: #0d1b2a;
   display: flex;
   align-items: center;
-  padding-left: 85px;
+  padding-left: 62px;
   gap: 25px;
 }
 .lower-third-circle {
-  height: 180px;
-  width: 180px;
+  height: 250px;
+  width: 250px;
   border-radius: 50%;
-  background: #1c263b;
   display: flex;
-  align-content: center;
+  justify-content: center;
   align-items: center;
-  border: solid #00b4d8 6px;
+  border: solid #7D6394 1px;
+  position: relative;
+  top: -7px;
+  left: 2px;
 }
 .lower-third-circle video {
   position: relative;
-  left: -118px;
-  top: 48px;
+  left: -89px;
+  top: 41px;
 }
 .lower-third-content {
   display: flex;
@@ -422,11 +422,12 @@ body {
   display: flex;
   width: 100%;
   justify-content: space-evenly;
-  bottom: 240px;
+  bottom: 280px;
+
 }
 .commentary-block {
-  background: #0d1b2a;
-  border: solid 5px #00b4d8;
+  background-attachment:fixed;
+  background-image:url("/graf-bg.png");  border: solid 5px #7D6394;
   border-radius: 20px;
   width: 360px;
   height: 120px;
@@ -513,7 +514,6 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 .dashboard-root {
   position: absolute;
   top: 0;
@@ -526,13 +526,11 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 .dashboard-container {
   max-width: 1200px;
   display: flex;
   gap: 100px;
 }
-
 .dashboard-item {
   border: #00b4d8 solid 4px;
   border-radius: 8px;
@@ -552,13 +550,27 @@ body {
   font-weight: bold;
   padding: 0 20px;
 }
-
 .dashboard-item h3 {
   margin: 0;
 }
-
 .dashboard-item input {
   font-size: 12pt;
   padding: 10px 5px;
   border-radius: 4px;
+}
+
+.lower-third-circle img {
+  height: 187px;
+}
+.lower-third-header-container {
+  position: absolute;
+  width: 782px;
+  top: 0;
+  left: 667px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 17pt;
 }

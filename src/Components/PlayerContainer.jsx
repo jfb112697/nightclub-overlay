@@ -29,7 +29,6 @@ const ScoreContainer = (props) => {
       style={{
         borderWidth: borderWidth,
         borderRadius: br,
-        background: scoreBg,
       }}
     >
       <span className={props.className}>{props.score}</span>
@@ -132,8 +131,8 @@ const PlayerContainer = (props) => {
       <div
         className={`char-container ${
           props.isReversed
-            ? "border-radius-0-10px-0-0"
-            : "border-radius-10px-0-0-0"
+            ? "border-radius-0-14px-0-0"
+            : "border-radius-14px-0-0-0"
         } ${
           props.isReversed
             ? "border-width-3px-3px-3px-0"

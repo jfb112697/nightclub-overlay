@@ -14,9 +14,9 @@ const AdRoll = (props) => {
   const [ads, setAds] = useState([
     {
       id: 1,
-      type: "video",
-      url: nightclub,
-      height: "825px",
+      type: "image",
+      src: "/function_3pfp.png",
+      style: { height: "485px" },
     },
   ]);
   const [currentAd, setCurrentAd] = useState(ads[0]);
@@ -31,9 +31,9 @@ const AdRoll = (props) => {
     const adsToDisplay = [
       {
         id: 1,
-        type: "video",
-        url: nightclub,
-        height: "825px",
+        type: "image",
+        src: "/function_3pfp.png",
+        style: {height: "485px"}
       },
       {
         id: 2,
@@ -48,12 +48,13 @@ const AdRoll = (props) => {
         player1: props.player1,
         player2: props.player2,
         apiData:
-          (outcomes && isActive) || (props.player1.h2hWins > -1 && props.player2.h2hWins > -1) === true
+          (outcomes && isActive) ||
+          (props.player1.h2hWins > -1 && props.player2.h2hWins > -1) === true
             ? {
-              outcomes: outcomes,
-              predictions: predictions,
-              isActive: isActive,
-            }
+                outcomes: outcomes,
+                predictions: predictions,
+                isActive: isActive,
+              }
             : null,
       },
     ];
@@ -69,7 +70,7 @@ const AdRoll = (props) => {
         return false;
       }
     });
-
+    console.dir(getAdComponent(currentAd));
     setAds(filteredAds);
   }, [recentResults, isActive, currentAdIndex, outcomes]);
 
@@ -101,6 +102,9 @@ const AdRoll = (props) => {
   function getAdComponent(ad) {
     let adComponent;
     switch (ad.type) {
+      case "image": 
+        adComponent = (<img src={ad.src} style={ad.style}/>)
+      break;
       case "video":
         adComponent = (
           <video

@@ -1,5 +1,7 @@
 import { React, useState } from "react";
 import nightclub from "../assets/nycmelee.png";
+import beastcoast from "../assets/beastcoast.png";
+import bklan from "../assets/bklan.png";
 import AdRoll from "./AdRoll";
 import TwitchAuth from "./TwitchAuth";
 
@@ -21,7 +23,8 @@ const GameLeftPanel = (props) => {
         </p>
         <div className="sponsor-images">
           <img src={nightclub}></img>
-          <img src="https://images.squarespace-cdn.com/content/v1/5d695110f8d59d0001fd289b/c085e465-ca9c-46cb-ac78-e8eced2dce7e/OS_with_bars_logo_WHITE.png?format=1500w" />
+          <img src={bklan} />
+          <img src={beastcoast} />
         </div>
       </div>
     </div>
