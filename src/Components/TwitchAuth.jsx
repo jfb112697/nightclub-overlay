@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
-const TWITCH_REDIRECT_URI = "https://localhost:5173";
+const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app";
 
 function useChannelPredictions(accessToken, credentials, isMounted) {
   const [predictions, setPredictions] = useState({});
@@ -133,7 +133,7 @@ function useTwitchAuth() {
   const [accessToken, setAccessToken] = useState(null);
 
   const TWITCH_CLIENT_ID = "m5n80d113xm73ero76pws5ltojnpki";
-  const TWITCH_REDIRECT_URI = "https://localhost:5173/";
+  const TWITCH_REDIRECT_URI = "https://ws-scoreboard.web.app/";
 
   const checkToken = async () => {
     const token = localStorage.getItem("access_token");

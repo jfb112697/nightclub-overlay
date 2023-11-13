@@ -1,41 +1,40 @@
 import React, { useEffect, useState } from "react";
-import nightclub from "../assets/nightclub.webm";
-import lineSvg from "../assets/CommentatorLine_SVG.svg";
 import PredictionBar from "./PredictionBar";
-import TwitchAuth, { useChannelPredictions, useTwitchAuth } from "./TwitchAuth";
+import { useChannelPredictions, useTwitchAuth } from "./TwitchAuth";
 
-function LowerThird(props) {
-  const commentators = props.data && props.data.Commentators && props.showCommentary == null || props.showCommentary == true ? props.data.Commentators : null;
+function LowerThird({ data, showCommentary = true }) {
   const { accessToken, credentials } = useTwitchAuth();
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
     credentials,
     true
   );
-  const [titleText, setTitleText] = useState("");
-  const [playerPercents, setPlayerPercents] = useState([]);
-    const [currentTime, setCurrentTime] = useState("");
 
-    useEffect(() => {
-      const updateClock = () => {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes();
-        const ampm = hours >= 12 ? "PM" : "AM";
+  const [currentTime, setCurrentTime] = useState("");
+  const [playerPercents, setPlayerPercents] = useState([50, 50]); // Default percentages
 
-        hours = hours % 12;
-        hours = hours || 12; // Convert '0' to '12'
-        const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+  // Update clock
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
 
-        setCurrentTime(`${hours}:${minutesStr} ${ampm}`);
-      };
+      hours = hours % 12;
+      hours = hours || 12; // Convert '0' to '12'
+      const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
 
-      updateClock(); // Update clock immediately on mount
-      const intervalId = setInterval(updateClock, 60000); // Update clock every minute
+      setCurrentTime(`${hours}:${minutesStr} ${ampm}`);
+    };
 
-      return () => clearInterval(intervalId); // Cleanup interval on component unmount
-    }, []);
+    updateClock(); // Update clock immediately on mount
+    const intervalId = setInterval(updateClock, 60000); // Update clock every minute
 
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
+
+  // Handle outcomes update
   useEffect(() => {
     if (outcomes && outcomes.length > 0) {
       setPlayerPercents([
@@ -50,59 +49,47 @@ function LowerThird(props) {
       ]);
     }
   }, [outcomes]);
+
+  // Accessor for nested properties with a default value
+  const getNestedValue = (obj, path, defaultValue) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part] ? acc[part] : defaultValue, obj);
+  };
+
+  const commentators = getNestedValue(data, 'Commentators', [{ Name: "Default Commentator", Twitter: "@default" }]);
+  
   return (
     <div className="lower-third-root">
       <div className="lower-third-header-container">
-        {props.data.lowerThird.ClockText || `Local Time: ${currentTime}`}{" "}
+        {getNestedValue(data, 'lowerThird.ClockText', `Local Time: ${currentTime}`)}
       </div>
+
       <div className="commentary-container">
-        {commentators && props.data.lowerThird.Commentary
-          ? commentators.map((c) => {
-              return (
-                <div className="commentary-block" key={Math.random()}>
-                  <div className="commentary-name">{c.Name}</div>
-                  {c.Twitter ? (
-                    <div className="commentary-twitter">@{c.Twitter}</div>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              );
-            })
-          : ""}
+        {showCommentary && commentators.map((commentator, index) => (
+          <div className="commentary-block" key={index}>
+            <div className="commentary-name">{commentator.Name}</div>
+            {commentator.Twitter && (
+              <div className="commentary-twitter">@{commentator.Twitter}</div>
+            )}
+          </div>
+        ))}
       </div>
 
       <div className="lower-third-container">
         <div className="lower-third-circle">
-          <img src="/function_3pfp.png" />
+          <img src="/function_3pfp.png"/>
+          {/* Placeholder for an image or icon */}
         </div>
         <div className="lower-third-content">
           <div className="lower-third-text-primary">
-            {props.data && (
-              <>
-                <div style={{ WebkitTextStroke: "#35B0A6 4px" }}>
-                  {isActive
-                    ? "Live Prediction"
-                    : props.data.lowerThird.LeftAnnotationText +
-                      ": " +
-                      props.data.lowerThird.TitleText}
-                </div>
-                <div>
-                  {isActive
-                    ? "Live Prediction"
-                    : props.data.lowerThird.LeftAnnotationText +
-                      ": " +
-                      props.data.lowerThird.TitleText}
-                </div>
-              </>
-            )}
+            {isActive
+              ? "Live Prediction"
+              :                 <div style={{ WebkitTextStroke: "#C61E94 4px" }}>
+              {getNestedValue(data, 'lowerThird.TitleText', 'Default Title')}</div>}
           </div>
           <div className="lower-third-text-secondary">
             {isActive
               ? predictions.event.title
-              : props.data &&
-                "The Nightclub S6E4 " + props.data &&
-                props.data.round}
+              : getNestedValue(data, 'lowerThird.SubtitleText', '')}
           </div>
         </div>
         {isActive && (
