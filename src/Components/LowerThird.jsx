@@ -60,7 +60,9 @@ function LowerThird({ data, showCommentary = true }) {
   return (
     <div className="lower-third-root">
       <div className="lower-third-header-container">
+        <div className="lower-third-header">
         {getNestedValue(data, 'lowerThird.ClockText', `Local Time: ${currentTime}`)}
+        </div>
       </div>
 
       <div className="commentary-container">
@@ -76,14 +78,13 @@ function LowerThird({ data, showCommentary = true }) {
 
       <div className="lower-third-container">
         <div className="lower-third-circle">
-          <img src="/function_3pfp.png"/>
           {/* Placeholder for an image or icon */}
         </div>
         <div className="lower-third-content">
           <div className="lower-third-text-primary">
             {isActive
               ? "Live Prediction"
-              :                 <div style={{ WebkitTextStroke: "#C61E94 4px" }}>
+              :                 <div>
               {getNestedValue(data, 'lowerThird.TitleText', 'Default Title')}</div>}
           </div>
           <div className="lower-third-text-secondary">

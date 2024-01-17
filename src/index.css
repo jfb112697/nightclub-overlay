@@ -36,7 +36,7 @@ body {
   min-height: 1080px;
   min-width: 1920px;
   left: 0;
-  background-image:url("/function-static.png");
+  background-image:url("/bfr-overlay.png");
   top: 0;
   padding: 0;
 }
@@ -142,7 +142,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 50pt;
-  color: #0d1b2a;
+  color: #C60402;
   font-weight: 800;
 }
 .name-container {
@@ -359,7 +359,7 @@ body {
   top: 20px;
 }
 .lower-third-root {
-  background-image:url('/function-l3-static.png');
+  background-image:url('/bfr-l3.png');
   position: absolute;
   left: 0;
   top: 0;
@@ -368,14 +368,14 @@ body {
 }
 .lower-third-container {
   position: absolute;
-  bottom: 75px;
+  bottom: 78px;
   border-width: 6px 0;
-  height: 120px;
+  height: 131px;
   width: 1850px;
   display: flex;
   align-items: center;
   padding-left: 62px;
-  gap: 25px;
+  gap: 75px;
 }
 .lower-third-circle {
   height: 250px;
@@ -384,7 +384,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: solid #7D6394 1px;
   position: relative;
   top: -7px;
   left: 2px;
@@ -402,9 +401,9 @@ body {
 }
 .lower-third-text-primary {
   /*! flex: 1; */
-  font-size: 36pt;
+  font-size: 50pt;
   font-weight: bolder;
-  color: #0d1b2a;
+  color: #eeeeee;
   display: grid;
 }
 .lower-third-text-primary div {
@@ -427,7 +426,7 @@ body {
 }
 .commentary-block {
   background-attachment:fixed;
-  background-image:url("/graf-bg.png");  border: solid 5px #7D6394;
+  background-image:url("/bfr-texture.png");  border: solid 5px #C60402;
   border-radius: 20px;
   width: 360px;
   height: 120px;
@@ -558,7 +557,6 @@ body {
   padding: 10px 5px;
   border-radius: 4px;
 }
-
 .lower-third-circle img {
   height: 187px;
 }

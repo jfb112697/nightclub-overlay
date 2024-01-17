@@ -15,8 +15,8 @@ const AdRoll = (props) => {
     {
       id: 1,
       type: "image",
-      src: "/function_3pfp.png",
-      style: { height: "485px" },
+      src: "/bfr-pfp.png",
+      style: { height: "430px" },
     },
   ]);
   const [currentAd, setCurrentAd] = useState(ads[0]);
@@ -32,8 +32,8 @@ const AdRoll = (props) => {
       {
         id: 1,
         type: "image",
-        src: "/function_3pfp.png",
-        style: {height: "485px"}
+        src: "/bfr-pfp.png",
+        style: {height: "430px"}
       },
       {
         id: 2,
