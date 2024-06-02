@@ -20,10 +20,12 @@ const GameLeftPanel = (props) => {
           <span className="sponsor-title">In Partnership With</span>
         </p>
         <div className="sponsor-images">
-          <img src={nightclub}></img>
+          <img style={{mixBlendMode:"screen"}}src={nightclub}></img>
           <img src="https://images.squarespace-cdn.com/content/v1/5d695110f8d59d0001fd289b/c085e465-ca9c-46cb-ac78-e8eced2dce7e/OS_with_bars_logo_WHITE.png?format=1500w" />
         </div>
       </div>
+      <div class="border-animation"></div>
+
     </div>
   );
 };

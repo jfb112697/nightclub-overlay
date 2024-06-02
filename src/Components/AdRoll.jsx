@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import RecentResults from "./RecentResults";
 import HeadToHead from "./HeadToHead";
-import nightclub from "../assets/nightclub.webm";
+import nightclub from "../assets/nightclub2.webm";
 import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
 
 const AdRoll = (props) => {
@@ -24,7 +24,7 @@ const AdRoll = (props) => {
   const [predictions, outcomes, isActive] = useChannelPredictions(
     accessToken,
     credentials,
-    isMounted
+    true
   );
 
   useEffect(() => {
@@ -188,7 +188,7 @@ const useRecentResults = (ggId) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer a12c24765a6edf6007669900bdf67bcf",
+            Authorization: "Bearer 4582999ee0f6149902298862dbb1c453",
           },
           body: JSON.stringify({
             query: Query,

@@ -22,6 +22,7 @@ export function useFetchPoll(url) {
         setData(result);
       }
     };
+    fetchData();
     const interval = setInterval(fetchData, 1000);
     return () => {
       isMounted = false;
