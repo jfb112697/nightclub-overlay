@@ -3,8 +3,10 @@ import RecentResults from "./RecentResults";
 import HeadToHead from "./HeadToHead";
 import nightclub from "../assets/nightclub2.webm";
 import { useTwitchAuth, useChannelPredictions } from "./TwitchAuth";
+import { loadEnv } from "vite";
 
 const AdRoll = (props) => {
+  const env = loadEnv("", process.env.NODE_ENV);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const recentResults = useRecentResults(props.ggId);
   const { accessToken, credentials, TWITCH_CLIENT_ID } = useTwitchAuth();
@@ -188,7 +190,7 @@ const useRecentResults = (ggId) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer 4582999ee0f6149902298862dbb1c453",
+            Authorization: "Bearer " + env.VITE_GG_BEARER,
           },
           body: JSON.stringify({
             query: Query,

@@ -1,6 +1,7 @@
 import Background from "./Components/Background";
 import bgtexture from "./assets/bgtexture.svg";
 
+import { loadEnv } from "vite";
 import { useFetchPoll } from "./Hooks/useFetchPoll";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Game } from "./Components/Game";
@@ -21,6 +22,8 @@ function getPort(url) {
 }
 
 function App() {
+
+  const env = loadEnv("", process.env.NODE_ENV);
   const port = getPort(window.location);
   const data = useFetchPoll(`http://localhost/getCurrentValues`);
   const [error, setError] = useState(null);
@@ -34,7 +37,7 @@ function App() {
         const res = await fetch("https://api.smash.gg/gql/alpha", {
           method: "POST",
           headers: {
-            Authorization: "Bearer 4582999ee0f6149902298862dbb1c453",
+            Authorization: "Bearer " + env.VITE_GG_BEARER,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({

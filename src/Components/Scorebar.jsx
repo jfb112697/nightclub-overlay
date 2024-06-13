@@ -1,7 +1,7 @@
 import { React } from "react";
 import { PlayerContainer } from "./PlayerContainer";
-
 const Scorebar = (props) => {
+
   return (
     <div id="scorebar">
       <PlayerContainer player={props.player1} />
